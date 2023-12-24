@@ -19,12 +19,8 @@ Resources:
       CodeUri: ./app   # Points to dir of Cargo.toml
       Handler: bootstrap    # Do not change, as this is the default executable name produced by Cargo Lambda
       Runtime: provided.al2023
-      {%- if cookiecutter.architecture.value != []%}
       Architectures:
-      {%- for arch in cookiecutter.architecture.value %}
-        - {{arch}}
-      {%- endfor %}
-      {%- endif %}
+        - ${{ cookiecutter.architecture }}
       Events:
         HelloWorld:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
