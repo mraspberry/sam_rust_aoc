@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  SAM Template for Advent of Code Problem {{ cookiecutter.project_number }} {{ cookiecutter.advent_of_code_year}}
+  SAM Template for Advent of Code Problem {{ cookiecutter.problem_number }} {{ cookiecutter.advent_of_code_year}}
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -19,9 +19,9 @@ Resources:
       CodeUri: ./app   # Points to dir of Cargo.toml
       Handler: bootstrap    # Do not change, as this is the default executable name produced by Cargo Lambda
       Runtime: provided.al2023
-      {%- if cookiecutter.architectures.value != []%}
+      {%- if cookiecutter.architecture.value != []%}
       Architectures:
-      {%- for arch in cookiecutter.architectures.value %}
+      {%- for arch in cookiecutter.architecture.value %}
         - {{arch}}
       {%- endfor %}
       {%- endif %}
@@ -40,8 +40,8 @@ Outputs:
     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
   ProblemFunction:
-    Description: "Advent of Code 2023 Problem ${{ cookiecutter.project_number }} Lambda Function ARN"
+    Description: "Advent of Code 2023 Problem ${{ cookiecutter.problem_number }} Lambda Function ARN"
     Value: !GetAtt ProblemFunction.Arn
   ProblemFunctionIamRole:
-    Description: "Implicit IAM Role created for Advent of Code 2023 Problem ${{ cookiecutter.project_number }} Lambda"
+    Description: "Implicit IAM Role created for Advent of Code 2023 Problem ${{ cookiecutter.problem_number }} Lambda"
     Value: !GetAtt ProblemFunctionRole.Arn
