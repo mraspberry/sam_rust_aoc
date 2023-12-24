@@ -1,4 +1,25 @@
-use lambda_http::{run, service_fn, Body, Error, Request, RequestExt, Response};
+use lambda_http::{run, http::{StatusCode}, service_fn, Body, Error, Request, RequestExt, Response};
+use serde::{Deserialize, Serialize};
+use serde_json::Result;
+
+#[derive(Serialize, Deserialize)]
+struct Answer {
+    problem: String,
+    answer: AnswerValue,
+}
+
+enum AnswerValue {
+    Str(String)
+    Int(i64)
+}
+
+fn solve() -> AnswerValue {
+    // do something real here
+match 1 {
+        AnswerValue::Str(a) => AnswerValue::Str(a)
+        AnswerValue::Int(a) => AnswerValue::Int(a)
+    }
+}
 
 /// This is the main body for the function.
 /// Write your code inside it.
@@ -6,18 +27,14 @@ use lambda_http::{run, service_fn, Body, Error, Request, RequestExt, Response};
 /// - https://github.com/awslabs/aws-lambda-rust-runtime/tree/main/examples
 async fn function_handler(event: Request) -> Result<Response<Body>, Error> {
     // Extract some useful information from the request
-    let who = event
-        .query_string_parameters_ref()
-        .and_then(|params| params.first("name"))
-        .unwrap_or("world");
-    let message = format!("Hello {who}, this is an AWS Lambda HTTP request");
+    let answer = Answer::new("problem${{ cookiecutter.problem_number }}", solve())
 
     // Return something that implements IntoResponse.
     // It will be serialized to the right response event automatically by the runtime
     let resp = Response::builder()
-        .status(200)
-        .header("content-type", "text/html")
-        .body(message.into())
+        .status(StatusCode::Ok)
+        .header("content-type", "application/json")
+        .body(json!(answer))
         .map_err(Box::new)?;
     Ok(resp)
 }
